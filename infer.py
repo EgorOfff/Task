@@ -83,4 +83,6 @@ def infer(weight, path_to_dataset):
     df_preds = df_preds.append(
         {'image': path.absolute(), 'labels': labels_class[torch.argmax(pred.cpu(), dim=1)]},
         ignore_index=True)
+
+  df_preds = df_preds.sort_values(by='image')
   df_preds.to_csv('/content/submission.csv', index = False)
