@@ -67,6 +67,7 @@ def infer(weight, path_to_dataset):
 
   data_transforms = albumentations.Compose([
     albumentations.Resize(img_size, img_size),
+    albumentations.Normalize(),
     AT.ToTensor()
     ]) 
   
