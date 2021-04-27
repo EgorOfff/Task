@@ -34,10 +34,6 @@ def infer(weight, path_to_dataset):
   import albumentations
   from albumentations import pytorch as AT
 
- def infer(weight, path_to_dataset):
-  from pathlib import Path
-  from sklearn.preprocessing import LabelEncoder
-
   img_size = 256
 
   device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
