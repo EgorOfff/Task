@@ -76,6 +76,7 @@ def infer(weight, path_to_dataset):
   df_preds = pd.DataFrame()
   for path in Path(path_to_dataset).iterdir():
     img = cv2.imread(str(path))[:, ::-1]
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = data_transforms(image=img)['image'].cuda()
     pred = model(img[None])
     
