@@ -34,13 +34,23 @@ def infer(weight, path_to_dataset):
   import albumentations
   from albumentations import pytorch as AT
 
+ def infer(weight, path_to_dataset):
+  from pathlib import Path
+  from sklearn.preprocessing import LabelEncoder
+
   img_size = 256
 
   device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
   model = torchvision.models.resnet152(pretrained=True, progress=True)
   model.fc = nn.Linear(2048, 22)
-
   model.load_state_dict(torch.load(weight))
+
+  name_files = os.listdir(path_to_dataset)
+  for i in range(0, len(name_files)):
+   name_files[i] = int(name_files[i].replace('.jpg', ''))
+  name_files.sort()
+  for i in range(0, len(name_files)):
+   name_files[i] = str(name_files[i]) + '.jpg'
 
   labels_class = ['badminton',
                   'baseball',
@@ -74,15 +84,15 @@ def infer(weight, path_to_dataset):
   model.to(device)
   model.eval()
   df_preds = pd.DataFrame()
-  for path in Path(path_to_dataset).iterdir():
-    img = cv2.imread(str(path))[:, ::-1]
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+  for i in range(0, len(name_files)):
+    img = cv2.imread(path_to_dataset + '/' + str(name_files[i]))[:, ::-1]
     img = data_transforms(image=img)['image'].cuda()
     pred = model(img[None])
     
     df_preds = df_preds.append(
-        {'image': path.absolute(), 'labels': labels_class[torch.argmax(pred.cpu(), dim=1)]},
+        {'image': str(name_files[i]), 'labels': labels_class[torch.argmax(pred.cpu(), dim=1)]},
         ignore_index=True)
-
-  df_preds = df_preds.sort_values(by='image')
+  
+  #df_preds = df_preds.sort_values(by='image')
+  #df_preds = df_preds.reset_index(drop=True)
   df_preds.to_csv('/content/submission.csv', index = False)
