@@ -30,9 +30,9 @@ def infer(weight, path_to_dataset):
   from PIL import Image
   from sklearn.preprocessing import LabelEncoder
   from pathlib import Path
-
   import albumentations
   from albumentations import pytorch as AT
+  from efficientnet_pytorch import EfficientNet	
 
   img_size = 256
 
