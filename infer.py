@@ -37,8 +37,8 @@ def infer(weight, path_to_dataset):
   img_size = 256
 
   device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-  model = torchvision.models.resnet152(pretrained=True, progress=True)
-  model.fc = nn.Linear(2048, 22)
+  model = EfficientNet.from_pretrained('efficientnet-b3')
+  model._fc = nn.Linear(in_features = 1536, out_features = 22)
   model.load_state_dict(torch.load(weight))
 
   name_files = os.listdir(path_to_dataset)
